@@ -167,25 +167,140 @@ window.addEventListener('scroll', () => {
 });
 
 // ============================================
-// FORM HANDLING
+// EMAILJS CONFIGURATION
 // ============================================
-const contactForm = document.querySelector('.contact-form');
+// TODO: Replace these placeholder values with your actual EmailJS credentials
+// You can get these from https://www.emailjs.com/ after creating an account
 
+const EMAILJS_CONFIG = {
+    // Your EmailJS Public Key (found in Account > API Keys)
+    PUBLIC_KEY: 'YOUR_PUBLIC_KEY_HERE',
+    
+    // Your EmailJS Service ID (found in Email Services)
+    SERVICE_ID: 'YOUR_SERVICE_ID_HERE',
+    
+    // Your EmailJS Template ID (found in Email Templates)
+    TEMPLATE_ID: 'YOUR_TEMPLATE_ID_HERE'
+};
+
+// Initialize EmailJS with your public key
+(function() {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+    }
+})();
+
+// ============================================
+// FORM HANDLING WITH EMAILJS
+// ============================================
+const contactForm = document.getElementById('contact-form');
+const formStatus = document.getElementById('form-status');
+const submitBtn = document.getElementById('submit-btn');
+
+/**
+ * Display status message to user
+ * @param {string} message - The message to display
+ * @param {string} type - 'success' or 'error'
+ */
+function showStatus(message, type) {
+    if (!formStatus) return;
+    
+    formStatus.textContent = message;
+    formStatus.className = `form-status ${type}`;
+    formStatus.style.display = 'block';
+    
+    // Auto-hide success message after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            formStatus.style.display = 'none';
+        }, 5000);
+    }
+}
+
+/**
+ * Toggle submit button loading state
+ * @param {boolean} isLoading - Whether form is submitting
+ */
+function setLoadingState(isLoading) {
+    if (!submitBtn) return;
+    
+    if (isLoading) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Sending...</span><i class="fas fa-spinner fa-spin"></i>';
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Send Message</span><i class="fas fa-paper-plane"></i>';
+    }
+}
+
+/**
+ * Validate form fields
+ * @returns {boolean} - Whether form is valid
+ */
+function validateForm() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    
+    if (!name || !email || !message) {
+        showStatus('Please fill in all fields.', 'error');
+        return false;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showStatus('Please enter a valid email address.', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Handle form submission with EmailJS
+ * @param {Event} e - Form submit event
+ */
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    // Validate form
+    if (!validateForm()) return;
+    
+    // Check if EmailJS is loaded
+    if (typeof emailjs === 'undefined') {
+        showStatus('Email service not loaded. Please refresh and try again.', 'error');
+        return;
+    }
+    
+    // Set loading state
+    setLoadingState(true);
+    formStatus.style.display = 'none';
+    
+    try {
+        // Send email using EmailJS
+        const response = await emailjs.sendForm(
+            EMAILJS_CONFIG.SERVICE_ID,
+            EMAILJS_CONFIG.TEMPLATE_ID,
+            contactForm
+        );
+        
+        // Success
+        showStatus('Message sent successfully! I\'ll get back to you soon.', 'success');
+        contactForm.reset();
+        
+    } catch (error) {
+        // Error handling
+        console.error('EmailJS Error:', error);
+        showStatus('Failed to send message. Please try again or email me directly.', 'error');
+    } finally {
+        setLoadingState(false);
+    }
+}
+
+// Attach event listener if form exists
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
-        
-        // Simple validation
-        if (name && email && message) {
-            // Here you would typically send to a backend
-            alert('Thank you for your message! I will get back to you soon.');
-            contactForm.reset();
-        }
-    });
+    contactForm.addEventListener('submit', handleFormSubmit);
 }
 
 // ============================================

@@ -895,11 +895,76 @@ section {
     color: var(--accent-cyan);
     opacity: 0.3;
     transition: all var(--transition-medium);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .project-card:hover .project-icon {
-    opacity: 0.1;
-    transform: scale(1.2);
+    opacity: 0.15;
+    transform: scale(1.1);
+}
+
+/* Featured Project (Hackathon Winner) */
+.project-featured {
+    position: relative;
+    border: 2px solid transparent;
+    background: linear-gradient(var(--bg-secondary), var(--bg-secondary)) padding-box,
+                linear-gradient(135deg, #ffd700, #ff8c00, #ffd700) border-box;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+}
+
+.project-featured:hover {
+    box-shadow: 0 20px 60px rgba(255, 215, 0, 0.25);
+    transform: translateY(-10px);
+}
+
+.project-featured .project-image {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-tertiary) 50%, var(--bg-primary) 100%);
+}
+
+.hackathon-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+    color: #1a1a1a;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    pointer-events: none;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+.hackathon-badge i {
+    font-size: 0.85rem;
+    animation: trophyBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6); }
+}
+
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+.project-subtitle {
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 12px;
+    opacity: 0.9;
 }
 
 .project-overlay {
@@ -908,41 +973,49 @@ section {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: transparent;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity var(--transition-medium);
-}
-
-.project-card:hover .project-overlay {
-    opacity: 1;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 15px;
+    pointer-events: none;
+    z-index: 5;
 }
 
 .project-links {
     display: flex;
-    gap: 15px;
+    gap: 12px;
+    pointer-events: auto;
 }
 
 .project-link {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--bg-tertiary);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-full);
     color: var(--text-primary);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     text-decoration: none;
     transition: all var(--transition-fast);
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .project-link:hover {
     background: var(--accent-cyan);
     color: var(--bg-primary);
-    transform: scale(1.1);
+    transform: scale(1.15);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 4px 20px rgba(0, 242, 234, 0.4);
+}
+
+.project-link:active {
+    transform: scale(1.05);
 }
 
 .project-content {
@@ -975,6 +1048,108 @@ section {
     border-radius: var(--radius-sm);
     font-size: 0.8rem;
     font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============================================
+   ACHIEVEMENTS SECTION
+   ============================================ */
+.achievements {
+    background: var(--bg-secondary);
+    max-width: 100%;
+    padding: var(--section-padding) 50px;
+}
+
+.achievements-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.achievement-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    padding: 35px;
+    display: flex;
+    gap: 30px;
+    border: 1px solid var(--bg-tertiary);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-medium);
+}
+
+.achievement-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 242, 234, 0.1);
+}
+
+.achievement-featured {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box,
+                linear-gradient(135deg, #ffd700, #ff8c00, #ffd700) border-box;
+}
+
+.achievement-featured:hover {
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.15);
+}
+
+.achievement-icon {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+    border-radius: var(--radius-md);
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.achievement-content {
+    flex: 1;
+}
+
+.achievement-title {
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.achievement-project {
+    font-size: 1rem;
+    color: var(--accent-cyan);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 15px;
+}
+
+.achievement-description {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.achievement-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.achievement-tag {
+    padding: 6px 14px;
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 /* ============================================
@@ -1238,6 +1413,50 @@ section {
     color: transparent;
 }
 
+/* Form Status Messages */
+.form-status {
+    display: none;
+    padding: 15px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.form-status.success {
+    background: rgba(0, 242, 234, 0.1);
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.form-status.error {
+    background: rgba(255, 82, 82, 0.1);
+    border: 1px solid #ff5252;
+    color: #ff5252;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Submit Button Loading State */
+.contact-form .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.contact-form .btn .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
 /* ============================================
    FOOTER
    ============================================ */
@@ -1407,6 +1626,25 @@ section {
     
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    .hackathon-badge {
+        font-size: 0.65rem;
+        padding: 6px 10px;
+    }
+
+    .achievement-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+
+    .achievement-icon {
+        margin: 0 auto;
+    }
+
+    .achievement-tags {
+        justify-content: center;
     }
     
     .footer-content {
